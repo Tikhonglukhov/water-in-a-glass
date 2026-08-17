@@ -20,22 +20,27 @@ const controls = {
   duration: document.querySelector("#duration"),
 };
 
-const outputs = {
-  initialTemperature: document.querySelector("#initial-temperature-output"),
-  airTemperature: document.querySelector("#air-temperature-output"),
-  mass: document.querySelector("#mass-output"),
-  heatCapacity: document.querySelector("#heat-capacity-output"),
-  transferCoefficient: document.querySelector("#transfer-coefficient-output"),
-  sampleTime: document.querySelector("#sample-time-output"),
-  duration: document.querySelector("#duration-output"),
+const numberControls = {
+  initialTemperature: document.querySelector("#initial-temperature-number"),
+  airTemperature: document.querySelector("#air-temperature-number"),
+  mass: document.querySelector("#mass-number"),
+  heatCapacity: document.querySelector("#heat-capacity-number"),
+  transferCoefficient: document.querySelector("#transfer-coefficient-number"),
+  sampleTime: document.querySelector("#sample-time-number"),
+  duration: document.querySelector("#duration-number"),
 };
 
 const chart = document.querySelector("#temperature-chart");
+const graphHeading = document.querySelector("#graph-heading");
+const curveLegend = document.querySelector("#curve-legend");
+const referenceLegend = document.querySelector("#reference-legend");
+const chartModeButtons = document.querySelectorAll("[data-chart-mode]");
 const sampleTemperature = document.querySelector("#sample-temperature");
 const timeConstant = document.querySelector("#time-constant");
 const remainingDifference = document.querySelector("#remaining-difference");
 const sampleResultLabel = document.querySelector("#sample-result-label");
 const resetButton = document.querySelector("#reset");
+let chartMode = "temperature";
 
 const decimal = new Intl.NumberFormat("ru-RU", {
   minimumFractionDigits: 1,
@@ -58,6 +63,10 @@ function temperatureAt(timeMinutes, state) {
 
   return state.airTemperature
     - (state.airTemperature - state.initialTemperature) * Math.exp(exponent);
+}
+
+function temperatureDifferenceAt(timeMinutes, state) {
+  return state.airTemperature - temperatureAt(timeMinutes, state);
 }
 
 function characteristicTimeMinutes(state) {
@@ -86,13 +95,9 @@ function setRangeProgress(control) {
 }
 
 function updateControlOutputs(state) {
-  outputs.initialTemperature.value = `${integer.format(state.initialTemperature)} °C`;
-  outputs.airTemperature.value = `${integer.format(state.airTemperature)} °C`;
-  outputs.mass.value = `${decimal.format(state.mass)} кг`;
-  outputs.heatCapacity.value = `${integer.format(state.heatCapacity)} Дж/(кг·°C)`;
-  outputs.transferCoefficient.value = `${decimal.format(state.transferCoefficient)} Вт/°C`;
-  outputs.sampleTime.value = `${integer.format(state.sampleTime)} мин`;
-  outputs.duration.value = `${integer.format(state.duration)} мин`;
+  for (const [key, control] of Object.entries(numberControls)) {
+    control.value = String(state[key]);
+  }
 
   Object.values(controls).forEach(setRangeProgress);
 }
@@ -103,8 +108,12 @@ function drawChart(state) {
   const margin = { top: 26, right: 28, bottom: 58, left: 72 };
   const plotWidth = width - margin.left - margin.right;
   const plotHeight = height - margin.top - margin.bottom;
-  const rawMinimum = Math.min(state.initialTemperature, state.airTemperature);
-  const rawMaximum = Math.max(state.initialTemperature, state.airTemperature);
+  const showsDifference = chartMode === "difference";
+  const valueAt = showsDifference ? temperatureDifferenceAt : temperatureAt;
+  const initialValue = valueAt(0, state);
+  const referenceValue = showsDifference ? 0 : state.airTemperature;
+  const rawMinimum = Math.min(initialValue, referenceValue);
+  const rawMaximum = Math.max(initialValue, referenceValue);
   const rawSpan = Math.max(rawMaximum - rawMinimum, 1);
   const padding = Math.max(rawSpan * 0.16, 2);
   const yMinimum = rawMinimum - padding;
@@ -116,11 +125,19 @@ function drawChart(state) {
 
   chart.replaceChildren();
   chart.append(
-    createSvgElement("title", { id: "chart-title" }, "График температуры воды во времени"),
+    createSvgElement(
+      "title",
+      { id: "chart-title" },
+      showsDifference
+        ? "График разности температур во времени"
+        : "График температуры воды во времени",
+    ),
     createSvgElement(
       "desc",
       { id: "chart-description" },
-      "Экспоненциальное приближение температуры воды к температуре воздуха.",
+      showsDifference
+        ? "Экспоненциальное уменьшение разности между температурой воздуха и воды."
+        : "Экспоненциальное приближение температуры воды к температуре воздуха.",
     ),
   );
 
@@ -130,7 +147,7 @@ function drawChart(state) {
 
   for (let index = 0; index <= horizontalTicks; index += 1) {
     const ratio = index / horizontalTicks;
-    const temperature = yMaximum - ratio * (yMaximum - yMinimum);
+    const value = yMaximum - ratio * (yMaximum - yMinimum);
     const yPosition = margin.top + ratio * plotHeight;
 
     grid.append(
@@ -148,7 +165,7 @@ function drawChart(state) {
         fill: "#5d7680",
         "font-size": 14,
         "text-anchor": "end",
-      }, `${decimal.format(temperature)}°`),
+      }, `${decimal.format(value)}°`),
     );
   }
 
@@ -193,15 +210,15 @@ function drawChart(state) {
       "font-size": 14,
       "text-anchor": "middle",
       transform: `rotate(-90 17 ${margin.top + plotHeight / 2})`,
-    }, "Температура, °C"),
+    }, showsDifference ? "ΔT, °C" : "Температура, °C"),
   );
 
-  const ambientY = y(state.airTemperature);
+  const referenceY = y(referenceValue);
   chart.append(createSvgElement("line", {
     x1: margin.left,
-    y1: ambientY,
+    y1: referenceY,
     x2: width - margin.right,
-    y2: ambientY,
+    y2: referenceY,
     stroke: "#e87945",
     "stroke-width": 2,
     "stroke-dasharray": "8 8",
@@ -213,7 +230,7 @@ function drawChart(state) {
   for (let index = 0; index <= points; index += 1) {
     const time = (index / points) * state.duration;
     const command = index === 0 ? "M" : "L";
-    pathData.push(`${command} ${x(time).toFixed(2)} ${y(temperatureAt(time, state)).toFixed(2)}`);
+    pathData.push(`${command} ${x(time).toFixed(2)} ${y(valueAt(time, state)).toFixed(2)}`);
   }
 
   chart.append(createSvgElement("path", {
@@ -226,7 +243,7 @@ function drawChart(state) {
   }));
 
   const sampleX = x(state.sampleTime);
-  const sampleY = y(temperatureAt(state.sampleTime, state));
+  const sampleY = y(valueAt(state.sampleTime, state));
 
   chart.append(
     createSvgElement("line", {
@@ -300,8 +317,8 @@ function drawChart(state) {
     const pointerX = ((event.clientX - bounds.left) / bounds.width) * width;
     const constrainedX = Math.max(margin.left, Math.min(width - margin.right, pointerX));
     const time = ((constrainedX - margin.left) / plotWidth) * state.duration;
-    const temperature = temperatureAt(time, state);
-    const pointY = y(temperature);
+    const value = valueAt(time, state);
+    const pointY = y(value);
     const tooltipX = constrainedX > width - 170 ? constrainedX - 138 : constrainedX + 12;
     const tooltipY = Math.max(margin.top + 5, pointY - 58);
 
@@ -312,7 +329,7 @@ function drawChart(state) {
     hoverCircle.setAttribute("cy", pointY);
     tooltip.setAttribute("transform", `translate(${tooltipX} ${tooltipY})`);
     tooltipTime.textContent = `${decimal.format(time)} мин`;
-    tooltipTemperature.textContent = `${decimal.format(temperature)} °C`;
+    tooltipTemperature.textContent = `${showsDifference ? "ΔT = " : ""}${decimal.format(value)} °C`;
   });
 
   hitArea.addEventListener("pointerleave", () => {
@@ -325,6 +342,7 @@ function drawChart(state) {
 function render() {
   const duration = Number(controls.duration.value);
   controls.sampleTime.max = String(duration);
+  numberControls.sampleTime.max = String(duration);
 
   if (Number(controls.sampleTime.value) > duration) {
     controls.sampleTime.value = String(duration);
@@ -336,6 +354,16 @@ function render() {
   updateControlOutputs(state);
   drawChart(state);
 
+  const showsDifference = chartMode === "difference";
+  graphHeading.textContent = showsDifference
+    ? "Разность температур во времени"
+    : "Температура во времени";
+  curveLegend.textContent = showsDifference ? "ΔT(t)" : "Вода";
+  referenceLegend.textContent = showsDifference ? "Равновесие, 0" : "Воздух";
+  chartModeButtons.forEach((button) => {
+    button.setAttribute("aria-pressed", String(button.dataset.chartMode === chartMode));
+  });
+
   sampleResultLabel.textContent = `Температура через ${integer.format(state.sampleTime)} мин`;
   sampleTemperature.textContent = `${decimal.format(result)} °C`;
   timeConstant.textContent = `${decimal.format(characteristicTimeMinutes(state))} мин`;
@@ -344,6 +372,34 @@ function render() {
 
 Object.values(controls).forEach((control) => {
   control.addEventListener("input", render);
+});
+
+for (const [key, numberControl] of Object.entries(numberControls)) {
+  numberControl.addEventListener("input", () => {
+    const value = numberControl.valueAsNumber;
+
+    if (!Number.isFinite(value)) {
+      return;
+    }
+
+    const minimum = Number(controls[key].min);
+    const maximum = Number(controls[key].max);
+    controls[key].value = String(Math.min(maximum, Math.max(minimum, value)));
+    render();
+  });
+
+  numberControl.addEventListener("change", () => {
+    if (!Number.isFinite(numberControl.valueAsNumber)) {
+      numberControl.value = controls[key].value;
+    }
+  });
+}
+
+chartModeButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    chartMode = button.dataset.chartMode;
+    render();
+  });
 });
 
 resetButton.addEventListener("click", () => {

@@ -32,7 +32,18 @@ Open the [live interactive graph](https://tikhonglukhov.github.io/water-in-a-gla
 - the total heat-transfer coefficient;
 - the observation time and graph duration.
 
-The graph and calculated values update immediately. No build step or external JavaScript libraries are required.
+The graph and calculated values update immediately. Every parameter can be changed with a slider or entered precisely as a number. The graph can display either the water temperature `T(t)` or the signed temperature difference `ΔT(t) = T_air - T(t)`.
+
+The page also includes:
+
+- a six-step derivation from the heat-transfer law to the final solution;
+- a parameter and unit glossary;
+- an explanation of the characteristic time `τ = mc/k`;
+- checks of the initial, equilibrium, and equal-temperature limits;
+- live results for the selected time;
+- responsive layouts for desktop and mobile screens.
+
+No build step or external JavaScript libraries are required.
 
 ## Assumptions
 
@@ -51,4 +62,4 @@ Open `index.html` in a browser. Because the project is fully static, no installa
 
 ## Next levels
 
-Future versions can introduce surface area, separate heat-transfer paths, the glass itself, evaporation, radiation, spatial temperature differences, and comparison with experimental measurements.
+Each future level will have its own page inside the same site. Planned levels can introduce surface area, separate heat-transfer paths, the glass itself, evaporation, radiation, spatial temperature differences, and comparison with experimental measurements.

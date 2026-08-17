@@ -17,9 +17,15 @@
           <div>
             <h1>Вода в стакане</h1>
             <p class="lede">
-              Посмотрите, как вода приближается к температуре воздуха. Меняйте параметры —
-              формула, график и результат пересчитаются сразу.
+              Выведите формулу шаг за шагом, проверьте её предельные случаи, а затем
+              исследуйте модель, меняя параметры и наблюдая за графиком.
             </p>
+            <nav class="page-nav" aria-label="Разделы уровня 1">
+              <a href="#derivation">Вывод формулы</a>
+              <a href="#parameters">Параметры</a>
+              <a href="#simulator">Симулятор</a>
+              <a href="#assumptions">Допущения</a>
+            </nav>
           </div>
           <div class="glass" aria-hidden="true">
             <div class="glass-water"></div>
@@ -42,7 +48,125 @@
         </p>
       </section>
 
-      <section class="workspace" aria-label="Интерактивная модель">
+      <section class="lesson-card" id="derivation" aria-labelledby="derivation-title">
+        <div class="lesson-intro">
+          <p class="section-kicker">От закона теплообмена к решению</p>
+          <h2 id="derivation-title">Вывод формулы по шагам</h2>
+          <p>
+            Одна и та же скорость передачи тепла сначала записывается со стороны воздуха,
+            а затем — со стороны нагревающейся воды.
+          </p>
+        </div>
+
+        <ol class="derivation-grid">
+          <li>
+            <span class="step-number">01</span>
+            <h3>Закон теплообмена</h3>
+            <p>Тепловая мощность пропорциональна текущей разности температур.</p>
+            <p class="step-equation">
+              <span class="fraction"><span>d<var>Q</var></span><span>d<var>t</var></span></span>
+              = <var>k</var>(<var>T</var><sub>возд</sub> − <var>T</var>)
+            </p>
+          </li>
+          <li>
+            <span class="step-number">02</span>
+            <h3>Нагрев воды</h3>
+            <p>Получаемое тепло изменяет температуру массы воды.</p>
+            <p class="step-equation">
+              <span class="fraction"><span>d<var>Q</var></span><span>d<var>t</var></span></span>
+              = <var>mc</var><span class="fraction"><span>d<var>T</var></span><span>d<var>t</var></span></span>
+            </p>
+          </li>
+          <li>
+            <span class="step-number">03</span>
+            <h3>Тепловой баланс</h3>
+            <p>Обе части описывают один поток тепла, поэтому приравниваем их.</p>
+            <p class="step-equation">
+              <var>mc</var><span class="fraction"><span>d<var>T</var></span><span>d<var>t</var></span></span>
+              = <var>k</var>(<var>T</var><sub>возд</sub> − <var>T</var>)
+            </p>
+          </li>
+          <li>
+            <span class="step-number">04</span>
+            <h3>Разделение переменных</h3>
+            <p>Температуру оставляем слева, время переносим вправо.</p>
+            <p class="step-equation">
+              <span class="fraction"><span>d<var>T</var></span><span><var>T</var><sub>возд</sub> − <var>T</var></span></span>
+              = <span class="fraction"><span><var>k</var></span><span><var>mc</var></span></span>d<var>t</var>
+            </p>
+          </li>
+          <li>
+            <span class="step-number">05</span>
+            <h3>Интегрирование</h3>
+            <p>Минус возникает из производной выражения в знаменателе.</p>
+            <p class="step-equation">
+              ln<span class="bracket">(</span>
+              <span class="fraction"><span><var>T</var><sub>возд</sub> − <var>T</var></span><span><var>T</var><sub>возд</sub> − <var>T</var><sub>0</sub></span></span>
+              <span class="bracket">)</span>
+              = −<span class="fraction"><span><var>k</var></span><span><var>mc</var></span></span><var>t</var>
+            </p>
+          </li>
+          <li>
+            <span class="step-number">06</span>
+            <h3>Начальное условие</h3>
+            <p>При <var>t</var> = 0 температура равна <var>T</var><sub>0</sub>; раскрываем логарифм.</p>
+            <p class="step-equation">
+              <var>T</var>(<var>t</var>) = <var>T</var><sub>возд</sub> −
+              (<var>T</var><sub>возд</sub> − <var>T</var><sub>0</sub>)e<sup>−<var>kt</var>/<var>mc</var></sup>
+            </p>
+          </li>
+        </ol>
+      </section>
+
+      <section class="concepts-grid" id="parameters" aria-label="Параметры и смысл модели">
+        <article class="parameter-card">
+          <p class="section-kicker">Словарь модели</p>
+          <h2>Что означает каждый символ</h2>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Символ</th>
+                  <th>Величина</th>
+                  <th>Единица</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><var>T</var>(<var>t</var>)</td><td>Температура воды</td><td>°C</td></tr>
+                <tr><td><var>T</var><sub>0</sub></td><td>Начальная температура воды</td><td>°C</td></tr>
+                <tr><td><var>T</var><sub>возд</sub></td><td>Температура воздуха</td><td>°C</td></tr>
+                <tr><td><var>m</var></td><td>Масса воды</td><td>кг</td></tr>
+                <tr><td><var>c</var></td><td>Удельная теплоёмкость</td><td>Дж/(кг·°C)</td></tr>
+                <tr><td><var>k</var></td><td>Общий коэффициент теплообмена</td><td>Вт/°C</td></tr>
+                <tr><td><var>t</var></td><td>Время</td><td>с (в интерфейсе — мин)</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="parameter-note">
+            Здесь <var>k</var> относится ко всей системе. На следующем уровне мы раскроем его
+            через площадь поверхности: <var>k</var> = <var>αS</var>.
+          </p>
+        </article>
+
+        <article class="meaning-card">
+          <p class="section-kicker">Физический смысл</p>
+          <h2>Характерное время</h2>
+          <p class="tau-equation"><var>τ</var> = <span class="fraction"><span><var>mc</var></span><span><var>k</var></span></span></p>
+          <p>
+            Через одно <var>τ</var> остаётся примерно 37% начальной разности температур,
+            а через три <var>τ</var> — около 5%. Чем больше <var>mc</var>, тем медленнее меняется
+            температура; чем больше <var>k</var>, тем быстрее идёт теплообмен.
+          </p>
+          <div class="limit-checks">
+            <h3>Проверки формулы</h3>
+            <p><span><var>t</var> = 0</span><strong><var>T</var>(0) = <var>T</var><sub>0</sub></strong></p>
+            <p><span><var>t</var> → ∞</span><strong><var>T</var>(<var>t</var>) → <var>T</var><sub>возд</sub></strong></p>
+            <p><span><var>T</var><sub>0</sub> = <var>T</var><sub>возд</sub></span><strong>Температура не меняется</strong></p>
+          </div>
+        </article>
+      </section>
+
+      <section class="workspace" id="simulator" aria-label="Интерактивная модель">
         <aside class="controls-card">
           <div class="section-heading">
             <div>
@@ -53,61 +177,61 @@
           </div>
 
           <div class="control-list">
-            <label class="control" for="initial-temperature">
-              <span class="control-header">
-                <span>Начальная температура воды</span>
-                <output id="initial-temperature-output" for="initial-temperature">20 °C</output>
-              </span>
-              <input id="initial-temperature" type="range" min="-10" max="90" step="1" value="20">
-            </label>
+            <div class="control">
+              <div class="control-header">
+                <label for="initial-temperature">Начальная температура воды</label>
+                <span class="numeric-control"><input id="initial-temperature-number" type="number" min="-10" max="90" step="0.1" value="20" aria-label="Точное значение начальной температуры воды"><span>°C</span></span>
+              </div>
+              <input id="initial-temperature" type="range" min="-10" max="90" step="0.1" value="20">
+            </div>
 
-            <label class="control" for="air-temperature">
-              <span class="control-header">
-                <span>Температура воздуха</span>
-                <output id="air-temperature-output" for="air-temperature">40 °C</output>
-              </span>
-              <input id="air-temperature" type="range" min="-10" max="90" step="1" value="40">
-            </label>
+            <div class="control">
+              <div class="control-header">
+                <label for="air-temperature">Температура воздуха</label>
+                <span class="numeric-control"><input id="air-temperature-number" type="number" min="-10" max="90" step="0.1" value="40" aria-label="Точное значение температуры воздуха"><span>°C</span></span>
+              </div>
+              <input id="air-temperature" type="range" min="-10" max="90" step="0.1" value="40">
+            </div>
 
-            <label class="control" for="mass">
-              <span class="control-header">
-                <span>Масса воды, <var>m</var></span>
-                <output id="mass-output" for="mass">1,0 кг</output>
-              </span>
-              <input id="mass" type="range" min="0.1" max="3" step="0.1" value="1">
-            </label>
+            <div class="control">
+              <div class="control-header">
+                <label for="mass">Масса воды, <var>m</var></label>
+                <span class="numeric-control"><input id="mass-number" type="number" min="0.1" max="3" step="0.01" value="1" aria-label="Точное значение массы воды"><span>кг</span></span>
+              </div>
+              <input id="mass" type="range" min="0.1" max="3" step="0.01" value="1">
+            </div>
 
-            <label class="control" for="heat-capacity">
-              <span class="control-header">
-                <span>Удельная теплоёмкость, <var>c</var></span>
-                <output id="heat-capacity-output" for="heat-capacity">4 180 Дж/(кг·°C)</output>
-              </span>
+            <div class="control">
+              <div class="control-header">
+                <label for="heat-capacity">Удельная теплоёмкость, <var>c</var></label>
+                <span class="numeric-control wide"><input id="heat-capacity-number" type="number" min="500" max="5000" step="10" value="4180" aria-label="Точное значение удельной теплоёмкости"><span>Дж/(кг·°C)</span></span>
+              </div>
               <input id="heat-capacity" type="range" min="500" max="5000" step="10" value="4180">
-            </label>
+            </div>
 
-            <label class="control" for="transfer-coefficient">
-              <span class="control-header">
-                <span>Коэффициент теплообмена, <var>k</var></span>
-                <output id="transfer-coefficient-output" for="transfer-coefficient">0,9 Вт/°C</output>
-              </span>
-              <input id="transfer-coefficient" type="range" min="0.1" max="5" step="0.1" value="0.9">
-            </label>
+            <div class="control">
+              <div class="control-header">
+                <label for="transfer-coefficient">Коэффициент теплообмена, <var>k</var></label>
+                <span class="numeric-control"><input id="transfer-coefficient-number" type="number" min="0.1" max="5" step="0.01" value="0.9" aria-label="Точное значение коэффициента теплообмена"><span>Вт/°C</span></span>
+              </div>
+              <input id="transfer-coefficient" type="range" min="0.1" max="5" step="0.01" value="0.9">
+            </div>
 
-            <label class="control" for="sample-time">
-              <span class="control-header">
-                <span>Рассчитать через</span>
-                <output id="sample-time-output" for="sample-time">5 мин</output>
-              </span>
-              <input id="sample-time" type="range" min="0" max="120" step="1" value="5">
-            </label>
+            <div class="control">
+              <div class="control-header">
+                <label for="sample-time">Рассчитать через</label>
+                <span class="numeric-control"><input id="sample-time-number" type="number" min="0" max="120" step="0.1" value="5" aria-label="Точное значение времени расчёта"><span>мин</span></span>
+              </div>
+              <input id="sample-time" type="range" min="0" max="120" step="0.1" value="5">
+            </div>
 
-            <label class="control" for="duration">
-              <span class="control-header">
-                <span>Длительность графика</span>
-                <output id="duration-output" for="duration">120 мин</output>
-              </span>
-              <input id="duration" type="range" min="10" max="360" step="5" value="120">
-            </label>
+            <div class="control">
+              <div class="control-header">
+                <label for="duration">Длительность графика</label>
+                <span class="numeric-control"><input id="duration-number" type="number" min="10" max="360" step="1" value="120" aria-label="Точная длительность графика"><span>мин</span></span>
+              </div>
+              <input id="duration" type="range" min="10" max="360" step="1" value="120">
+            </div>
           </div>
         </aside>
 
@@ -115,13 +239,24 @@
           <div class="section-heading graph-heading">
             <div>
               <p class="section-kicker">Результат</p>
-              <h2>Температура во времени</h2>
+              <h2 id="graph-heading">Температура во времени</h2>
             </div>
-            <div class="legend" aria-label="Легенда графика">
-              <span><i class="legend-line curve"></i>Вода</span>
-              <span><i class="legend-line ambient"></i>Воздух</span>
+            <div class="chart-heading-actions">
+              <div class="chart-mode" role="group" aria-label="Величина на графике">
+                <button type="button" data-chart-mode="temperature" aria-pressed="true"><var>T</var>(<var>t</var>)</button>
+                <button type="button" data-chart-mode="difference" aria-pressed="false"><var>ΔT</var>(<var>t</var>)</button>
+              </div>
+              <div class="legend" aria-label="Легенда графика">
+                <span><i class="legend-line curve"></i><span id="curve-legend">Вода</span></span>
+                <span><i class="legend-line ambient"></i><span id="reference-legend">Воздух</span></span>
+              </div>
             </div>
           </div>
+
+          <p class="chart-explanation">
+            <var>ΔT</var>(<var>t</var>) = <var>T</var><sub>возд</sub> − <var>T</var>(<var>t</var>).
+            Отрицательное значение означает, что вода теплее воздуха.
+          </p>
 
           <div class="chart-wrap">
             <svg id="temperature-chart" viewBox="0 0 900 480" role="img" aria-labelledby="chart-title chart-description">
@@ -140,14 +275,14 @@
               <strong id="time-constant">77,4 мин</strong>
             </article>
             <article class="result-card">
-              <span class="result-label">Оставшаяся разность</span>
+              <span class="result-label">Модуль разности |ΔT|</span>
               <strong id="remaining-difference">19,0 °C</strong>
             </article>
           </div>
         </div>
       </section>
 
-      <section class="assumptions" aria-labelledby="assumptions-title">
+      <section class="assumptions" id="assumptions" aria-labelledby="assumptions-title">
         <div>
           <p class="section-kicker">Границы модели</p>
           <h2 id="assumptions-title">Чем мы пока пренебрегаем</h2>
