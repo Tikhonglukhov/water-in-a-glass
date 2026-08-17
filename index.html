@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Интерактивная модель нагревания воды в стакане по закону Ньютона">
+    <title>Вода в стакане — интерактивная модель</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="styles.css">
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <main class="page-shell">
+      <header class="hero">
+        <div class="eyebrow">Уровень 1 · идеальная модель</div>
+        <div class="hero-grid">
+          <div>
+            <h1>Вода в стакане</h1>
+            <p class="lede">
+              Посмотрите, как вода приближается к температуре воздуха. Меняйте параметры —
+              формула, график и результат пересчитаются сразу.
+            </p>
+          </div>
+          <div class="glass" aria-hidden="true">
+            <div class="glass-water"></div>
+            <div class="glass-shine"></div>
+          </div>
+        </div>
+      </header>
+
+      <section class="formula-card" aria-labelledby="formula-title">
+        <div>
+          <p class="section-kicker" id="formula-title">Решение уравнения теплового баланса</p>
+          <p class="formula" aria-label="T от t равно T воздуха минус разность T воздуха и T ноль, умноженная на экспоненту минус k t делённое на m c">
+            <var>T</var>(<var>t</var>) = <var>T</var><sub>возд</sub> −
+            (<var>T</var><sub>возд</sub> − <var>T</var><sub>0</sub>)
+            e<sup>−<var>kt</var>/<var>mc</var></sup>
+          </p>
+        </div>
+        <p class="formula-note">
+          Скорость передачи тепла пропорциональна текущей разности температур.
+        </p>
+      </section>
+
+      <section class="workspace" aria-label="Интерактивная модель">
+        <aside class="controls-card">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">Параметры</p>
+              <h2>Настройте систему</h2>
+            </div>
+            <button class="reset-button" id="reset" type="button">Сбросить</button>
+          </div>
+
+          <div class="control-list">
+            <label class="control" for="initial-temperature">
+              <span class="control-header">
+                <span>Начальная температура воды</span>
+                <output id="initial-temperature-output" for="initial-temperature">20 °C</output>
+              </span>
+              <input id="initial-temperature" type="range" min="-10" max="90" step="1" value="20">
+            </label>
+
+            <label class="control" for="air-temperature">
+              <span class="control-header">
+                <span>Температура воздуха</span>
+                <output id="air-temperature-output" for="air-temperature">40 °C</output>
+              </span>
+              <input id="air-temperature" type="range" min="-10" max="90" step="1" value="40">
+            </label>
+
+            <label class="control" for="mass">
+              <span class="control-header">
+                <span>Масса воды, <var>m</var></span>
+                <output id="mass-output" for="mass">1,0 кг</output>
+              </span>
+              <input id="mass" type="range" min="0.1" max="3" step="0.1" value="1">
+            </label>
+
+            <label class="control" for="heat-capacity">
+              <span class="control-header">
+                <span>Удельная теплоёмкость, <var>c</var></span>
+                <output id="heat-capacity-output" for="heat-capacity">4 180 Дж/(кг·°C)</output>
+              </span>
+              <input id="heat-capacity" type="range" min="500" max="5000" step="10" value="4180">
+            </label>
+
+            <label class="control" for="transfer-coefficient">
+              <span class="control-header">
+                <span>Коэффициент теплообмена, <var>k</var></span>
+                <output id="transfer-coefficient-output" for="transfer-coefficient">0,9 Вт/°C</output>
+              </span>
+              <input id="transfer-coefficient" type="range" min="0.1" max="5" step="0.1" value="0.9">
+            </label>
+
+            <label class="control" for="sample-time">
+              <span class="control-header">
+                <span>Рассчитать через</span>
+                <output id="sample-time-output" for="sample-time">5 мин</output>
+              </span>
+              <input id="sample-time" type="range" min="0" max="120" step="1" value="5">
+            </label>
+
+            <label class="control" for="duration">
+              <span class="control-header">
+                <span>Длительность графика</span>
+                <output id="duration-output" for="duration">120 мин</output>
+              </span>
+              <input id="duration" type="range" min="10" max="360" step="5" value="120">
+            </label>
+          </div>
+        </aside>
+
+        <div class="visualization-card">
+          <div class="section-heading graph-heading">
+            <div>
+              <p class="section-kicker">Результат</p>
+              <h2>Температура во времени</h2>
+            </div>
+            <div class="legend" aria-label="Легенда графика">
+              <span><i class="legend-line curve"></i>Вода</span>
+              <span><i class="legend-line ambient"></i>Воздух</span>
+            </div>
+          </div>
+
+          <div class="chart-wrap">
+            <svg id="temperature-chart" viewBox="0 0 900 480" role="img" aria-labelledby="chart-title chart-description">
+              <title id="chart-title">График температуры воды во времени</title>
+              <desc id="chart-description">Экспоненциальное приближение температуры воды к температуре воздуха.</desc>
+            </svg>
+          </div>
+
+          <div class="results" aria-live="polite">
+            <article class="result-card accent">
+              <span class="result-label" id="sample-result-label">Температура через 5 мин</span>
+              <strong id="sample-temperature">20,1 °C</strong>
+            </article>
+            <article class="result-card">
+              <span class="result-label">Характерное время, τ</span>
+              <strong id="time-constant">77,4 мин</strong>
+            </article>
+            <article class="result-card">
+              <span class="result-label">Оставшаяся разность</span>
+              <strong id="remaining-difference">19,0 °C</strong>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="assumptions" aria-labelledby="assumptions-title">
+        <div>
+          <p class="section-kicker">Границы модели</p>
+          <h2 id="assumptions-title">Чем мы пока пренебрегаем</h2>
+        </div>
+        <ul>
+          <li>Температура воздуха постоянна.</li>
+          <li>Температура воды одинакова во всех точках.</li>
+          <li>Стакан не накапливает тепло и не мешает его передаче.</li>
+          <li>Нет испарения и теплообмена со столом.</li>
+          <li>Весь теплообмен описывает один постоянный коэффициент <var>k</var>.</li>
+        </ul>
+      </section>
+
+      <footer>
+        <span>Water in a Glass</span>
+        <a href="https://github.com/Tikhonglukhov/water-in-a-glass">Исходный код на GitHub</a>
+      </footer>
+    </main>
+  </body>
+</html>
