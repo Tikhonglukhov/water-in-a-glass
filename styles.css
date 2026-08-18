@@ -47,6 +47,53 @@ input {
   padding: 68px 0 38px;
 }
 
+.level-switcher {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 34px;
+}
+
+.level-switcher > a,
+.level-switcher > .level-coming {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 13px;
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.64);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.level-switcher > a span,
+.level-switcher > .level-coming span {
+  color: var(--water-dark);
+  font-variant-numeric: tabular-nums;
+}
+
+.level-switcher > a:hover {
+  color: var(--water-dark);
+  border-color: rgba(12, 148, 165, 0.4);
+}
+
+.level-switcher > a[aria-current="page"] {
+  color: #fff;
+  background: var(--ink);
+  border-color: var(--ink);
+}
+
+.level-switcher > a[aria-current="page"] span {
+  color: #8edbe0;
+}
+
+.level-switcher > .level-coming {
+  opacity: 0.56;
+}
+
 .hero-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 180px;

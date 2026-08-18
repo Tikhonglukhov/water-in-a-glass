@@ -22,6 +22,22 @@ The characteristic time of the process is:
 τ = mc / k
 ```
 
+## Level 2: surface area and vessel shape
+
+The second model expands the total heat-transfer coefficient as `k = αS` and
+calculates the exposed area of a vessel with a square base. For a fixed volume:
+
+```text
+h = V / a²
+S(a) = a² + 4V/a
+mc · dT/dt = αS(a) · (T_air - T)
+```
+
+The page compares a selected vessel with a cube containing the same amount of
+water. It also shows the non-monotonic result: both very narrow and very wide
+vessels have a large exposed area. The minimum occurs at `a = (2V)^(1/3)`, where
+`h = a/2` and the characteristic time is largest.
+
 ## Interactive model
 
 Open the [live interactive graph](https://tikhonglukhov.github.io/water-in-a-glass/) and change:
@@ -43,18 +59,20 @@ The page also includes:
 - live results for the selected time;
 - responsive layouts for desktop and mobile screens.
 
+Continue with the [Level 2 surface-area lab](https://tikhonglukhov.github.io/water-in-a-glass/levels/2-surface-area/), where you can change the volume, square-base width, and heat-transfer coefficient, inspect the resulting geometry, and compare two temperature curves.
+
 No build step or external JavaScript libraries are required.
 
 ## Assumptions
 
-At this level, the model assumes that:
+At the first two levels, the model assumes that:
 
 - the air temperature is constant;
 - the water has the same temperature everywhere;
 - the glass has no heat capacity or thermal resistance;
 - there is no evaporation;
 - there is no heat exchange with the table;
-- all heat-transfer mechanisms are represented by one constant coefficient `k`.
+- the heat-transfer coefficient per unit area `α` is constant.
 
 ## Run locally
 
@@ -62,4 +80,4 @@ Open `index.html` in a browser. Because the project is fully static, no installa
 
 ## Next levels
 
-Each future level will have its own page inside the same site. Planned levels can introduce surface area, separate heat-transfer paths, the glass itself, evaporation, radiation, spatial temperature differences, and comparison with experimental measurements.
+Each level has its own page inside the same site. Future levels can introduce separate heat-transfer paths, the glass itself, evaporation, radiation, spatial temperature differences, and comparison with experimental measurements.
