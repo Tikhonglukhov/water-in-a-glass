@@ -202,6 +202,22 @@
   border-radius: 14px;
 }
 
+.control-group-label {
+  margin: 0 0 8px;
+  color: var(--water-dark);
+  font-size: 0.7rem;
+  font-weight: 850;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.vessel-b-control {
+  --water: #7457a8;
+  --water-dark: #5e438d;
+  --water-soft: #eee8f7;
+  background: var(--water-soft);
+}
+
 .level-two-output {
   display: grid;
   min-width: 0;
@@ -216,18 +232,68 @@
   box-shadow: var(--shadow);
 }
 
-.vessel-layout {
+.comparison-vessels {
   display: grid;
-  grid-template-columns: minmax(280px, 0.9fr) minmax(250px, 1.1fr);
-  gap: 28px;
-  align-items: center;
-  margin-top: 15px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 22px;
 }
 
-#vessel-diagram {
+.vessel-panel {
+  min-width: 0;
+  padding: 18px;
+  background: #f7faf9;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+}
+
+.vessel-b-panel {
+  background: #faf8fd;
+  border-color: #e3daef;
+}
+
+.vessel-panel-heading {
+  display: flex;
+  gap: 11px;
+  align-items: center;
+}
+
+.vessel-panel-heading > span {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+  place-items: center;
+  color: #fff;
+  background: var(--water-dark);
+  border-radius: 50%;
+  font-weight: 850;
+}
+
+.vessel-b-panel .vessel-panel-heading > span {
+  background: #7457a8;
+}
+
+.vessel-panel-heading h3,
+.vessel-panel-heading p {
+  margin: 0;
+}
+
+.vessel-panel-heading h3 {
+  font-size: 1rem;
+}
+
+.vessel-panel-heading p {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+#vessel-a-diagram,
+#vessel-b-diagram {
   display: block;
   width: 100%;
-  max-height: 270px;
+  max-height: 245px;
+  margin: 8px 0;
 }
 
 .geometry-values {
@@ -243,6 +309,11 @@
   background: #f7faf9;
   border: 1px solid var(--line);
   border-radius: 14px;
+}
+
+.vessel-panel .geometry-values div {
+  padding: 12px;
+  background: #fff;
 }
 
 .geometry-values dt {
@@ -284,6 +355,11 @@
   border-top-style: dashed;
 }
 
+.vessel-b-result {
+  background: #eee8f7;
+  border-color: transparent;
+}
+
 .comparison-results {
   grid-template-columns: repeat(3, 1fr);
 }
@@ -295,11 +371,12 @@
 }
 
 @media (max-width: 760px) {
-  .vessel-layout {
+  .comparison-vessels {
     grid-template-columns: 1fr;
   }
 
-  #vessel-diagram {
+  #vessel-a-diagram,
+  #vessel-b-diagram {
     max-width: 420px;
     margin: 0 auto;
   }

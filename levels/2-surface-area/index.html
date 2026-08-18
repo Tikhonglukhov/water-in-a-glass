@@ -168,7 +168,7 @@
           <div class="section-heading">
             <div>
               <p class="section-kicker">Параметры</p>
-              <h2>Измените форму</h2>
+              <h2>Сравните две формы</h2>
             </div>
             <button class="reset-button" id="reset" type="button">Сбросить</button>
           </div>
@@ -195,12 +195,21 @@
               </div>
               <input id="volume" type="range" min="0.2" max="3" step="0.01" value="1">
             </div>
-            <div class="control highlighted-control">
+            <div class="control highlighted-control vessel-a-control">
+              <p class="control-group-label">Сосуд A</p>
               <div class="control-header">
-                <label for="base-side">Сторона основания, <var>a</var></label>
-                <span class="numeric-control"><input id="base-side-number" type="number" min="4" max="30" step="0.1" value="20" aria-label="Точная сторона квадратного основания"><span>см</span></span>
+                <label for="base-side-a">Сторона основания, <var>a</var><sub>A</sub></label>
+                <span class="numeric-control"><input id="base-side-a-number" type="number" min="4" max="30" step="0.1" value="7" aria-label="Точная сторона основания сосуда A"><span>см</span></span>
               </div>
-              <input id="base-side" type="range" min="4" max="30" step="0.1" value="20">
+              <input id="base-side-a" type="range" min="4" max="30" step="0.1" value="7">
+            </div>
+            <div class="control highlighted-control vessel-b-control">
+              <p class="control-group-label">Сосуд B</p>
+              <div class="control-header">
+                <label for="base-side-b">Сторона основания, <var>a</var><sub>B</sub></label>
+                <span class="numeric-control"><input id="base-side-b-number" type="number" min="4" max="30" step="0.1" value="24" aria-label="Точная сторона основания сосуда B"><span>см</span></span>
+              </div>
+              <input id="base-side-b" type="range" min="4" max="30" step="0.1" value="24">
             </div>
             <div class="control">
               <div class="control-header">
@@ -229,20 +238,42 @@
         <div class="level-two-output">
           <section class="vessel-card" aria-labelledby="vessel-title">
             <div>
-              <p class="section-kicker">Текущая геометрия</p>
-              <h2 id="vessel-title">Сосуд при неизменном объёме</h2>
+              <p class="section-kicker">Геометрия бок о бок</p>
+              <h2 id="vessel-title">Два сосуда при одном объёме</h2>
             </div>
-            <div class="vessel-layout">
-              <svg id="vessel-diagram" viewBox="0 0 360 270" role="img" aria-labelledby="vessel-diagram-title vessel-diagram-description">
-                <title id="vessel-diagram-title">Схема сосуда</title>
-                <desc id="vessel-diagram-description">Прямоугольный сосуд с квадратным основанием, заполненный водой.</desc>
-              </svg>
-              <dl class="geometry-values">
-                <div><dt>Высота <var>h</var></dt><dd id="height-result">2,5 см</dd></div>
-                <div><dt>Площадь <var>S</var></dt><dd id="area-result">0,060 м²</dd></div>
-                <div><dt><var>k=αS</var></dt><dd id="k-result">0,60 Вт/°C</dd></div>
-                <div><dt>Характерное время <var>τ</var></dt><dd id="tau-result">116,1 мин</dd></div>
-              </dl>
+            <div class="comparison-vessels">
+              <article class="vessel-panel vessel-a-panel">
+                <div class="vessel-panel-heading">
+                  <span>A</span>
+                  <div><h3>Сосуд A</h3><p id="vessel-a-shape">Уже точки минимума</p></div>
+                </div>
+                <svg id="vessel-a-diagram" viewBox="0 0 360 270" role="img" aria-labelledby="vessel-a-diagram-title vessel-a-diagram-description">
+                  <title id="vessel-a-diagram-title">Схема сосуда A</title>
+                  <desc id="vessel-a-diagram-description">Первый прямоугольный сосуд с квадратным основанием.</desc>
+                </svg>
+                <dl class="geometry-values">
+                  <div><dt>Высота <var>h</var><sub>A</sub></dt><dd id="height-a-result">20,4 см</dd></div>
+                  <div><dt>Площадь <var>S</var><sub>A</sub></dt><dd id="area-a-result">0,062 м²</dd></div>
+                  <div><dt><var>k</var><sub>A</sub><var>=αS</var><sub>A</sub></dt><dd id="k-a-result">0,62 Вт/°C</dd></div>
+                  <div><dt>Время <var>τ</var><sub>A</sub></dt><dd id="tau-a-result">112,1 мин</dd></div>
+                </dl>
+              </article>
+              <article class="vessel-panel vessel-b-panel">
+                <div class="vessel-panel-heading">
+                  <span>B</span>
+                  <div><h3>Сосуд B</h3><p id="vessel-b-shape">Шире точки минимума</p></div>
+                </div>
+                <svg id="vessel-b-diagram" viewBox="0 0 360 270" role="img" aria-labelledby="vessel-b-diagram-title vessel-b-diagram-description">
+                  <title id="vessel-b-diagram-title">Схема сосуда B</title>
+                  <desc id="vessel-b-diagram-description">Второй прямоугольный сосуд с квадратным основанием.</desc>
+                </svg>
+                <dl class="geometry-values">
+                  <div><dt>Высота <var>h</var><sub>B</sub></dt><dd id="height-b-result">1,7 см</dd></div>
+                  <div><dt>Площадь <var>S</var><sub>B</sub></dt><dd id="area-b-result">0,074 м²</dd></div>
+                  <div><dt><var>k</var><sub>B</sub><var>=αS</var><sub>B</sub></dt><dd id="k-b-result">0,74 Вт/°C</dd></div>
+                  <div><dt>Время <var>τ</var><sub>B</sub></dt><dd id="tau-b-result">93,8 мин</dd></div>
+                </dl>
+              </article>
             </div>
             <p class="geometry-insight" id="geometry-insight"></p>
           </section>
@@ -251,11 +282,11 @@
             <div class="section-heading graph-heading">
               <div>
                 <p class="section-kicker">Сравнение</p>
-                <h2 id="graph-heading">Выбранная форма и куб</h2>
+                <h2 id="graph-heading">Сосуд A и сосуд B</h2>
               </div>
               <div class="legend" aria-label="Легенда графика">
-                <span><i class="legend-line selected-curve"></i>Выбранная</span>
-                <span><i class="legend-line cube-curve"></i>Куб</span>
+                <span><i class="legend-line selected-curve"></i><span id="vessel-a-legend">Сосуд A</span></span>
+                <span><i class="legend-line cube-curve"></i><span id="vessel-b-legend">Сосуд B</span></span>
                 <span><i class="legend-line ambient"></i>Воздух</span>
               </div>
             </div>
@@ -265,21 +296,21 @@
             <div class="chart-wrap">
               <svg id="comparison-chart" viewBox="0 0 900 480" role="img" aria-labelledby="comparison-chart-title comparison-chart-description">
                 <title id="comparison-chart-title">Сравнение температуры воды в сосудах разной формы</title>
-                <desc id="comparison-chart-description">Две кривые нагревания воды одинакового объёма в выбранном и кубическом сосудах.</desc>
+                <desc id="comparison-chart-description">Две кривые нагревания воды одинакового объёма в независимо настраиваемых сосудах A и B.</desc>
               </svg>
             </div>
             <div class="results comparison-results" aria-live="polite">
               <article class="result-card accent">
-                <span class="result-label" id="sample-result-label">Выбранная форма через 30 мин</span>
-                <strong id="sample-temperature">24,6 °C</strong>
+                <span class="result-label" id="sample-a-result-label">Сосуд A через 30 мин</span>
+                <strong id="sample-a-temperature">24,7 °C</strong>
+              </article>
+              <article class="result-card vessel-b-result">
+                <span class="result-label" id="sample-b-result-label">Сосуд B через 30 мин</span>
+                <strong id="sample-b-temperature">25,5 °C</strong>
               </article>
               <article class="result-card">
-                <span class="result-label">Кубический сосуд</span>
-                <strong id="cube-temperature">24,0 °C</strong>
-              </article>
-              <article class="result-card">
-                <span class="result-label">Разница площадей</span>
-                <strong id="area-comparison">+20,0%</strong>
+                <span class="result-label">Разница температур</span>
+                <strong id="temperature-comparison">0,8 °C</strong>
               </article>
             </div>
           </section>

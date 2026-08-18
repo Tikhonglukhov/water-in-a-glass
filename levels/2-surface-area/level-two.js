@@ -6,7 +6,8 @@ const defaults = Object.freeze({
   initialTemperature: 20,
   airTemperature: 40,
   volume: 1,
-  baseSide: 20,
+  baseSideA: 7,
+  baseSideB: 24,
   alpha: 10,
   sampleTime: 30,
   duration: 180,
@@ -16,7 +17,8 @@ const controls = {
   initialTemperature: document.querySelector("#initial-temperature"),
   airTemperature: document.querySelector("#air-temperature"),
   volume: document.querySelector("#volume"),
-  baseSide: document.querySelector("#base-side"),
+  baseSideA: document.querySelector("#base-side-a"),
+  baseSideB: document.querySelector("#base-side-b"),
   alpha: document.querySelector("#alpha"),
   sampleTime: document.querySelector("#sample-time"),
   duration: document.querySelector("#duration"),
@@ -26,23 +28,34 @@ const numberControls = {
   initialTemperature: document.querySelector("#initial-temperature-number"),
   airTemperature: document.querySelector("#air-temperature-number"),
   volume: document.querySelector("#volume-number"),
-  baseSide: document.querySelector("#base-side-number"),
+  baseSideA: document.querySelector("#base-side-a-number"),
+  baseSideB: document.querySelector("#base-side-b-number"),
   alpha: document.querySelector("#alpha-number"),
   sampleTime: document.querySelector("#sample-time-number"),
   duration: document.querySelector("#duration-number"),
 };
 
 const chart = document.querySelector("#comparison-chart");
-const vesselDiagram = document.querySelector("#vessel-diagram");
-const heightResult = document.querySelector("#height-result");
-const areaResult = document.querySelector("#area-result");
-const kResult = document.querySelector("#k-result");
-const tauResult = document.querySelector("#tau-result");
+const vesselADiagram = document.querySelector("#vessel-a-diagram");
+const vesselBDiagram = document.querySelector("#vessel-b-diagram");
+const heightAResult = document.querySelector("#height-a-result");
+const areaAResult = document.querySelector("#area-a-result");
+const kAResult = document.querySelector("#k-a-result");
+const tauAResult = document.querySelector("#tau-a-result");
+const heightBResult = document.querySelector("#height-b-result");
+const areaBResult = document.querySelector("#area-b-result");
+const kBResult = document.querySelector("#k-b-result");
+const tauBResult = document.querySelector("#tau-b-result");
+const vesselAShape = document.querySelector("#vessel-a-shape");
+const vesselBShape = document.querySelector("#vessel-b-shape");
 const geometryInsight = document.querySelector("#geometry-insight");
-const sampleResultLabel = document.querySelector("#sample-result-label");
-const sampleTemperature = document.querySelector("#sample-temperature");
-const cubeTemperature = document.querySelector("#cube-temperature");
-const areaComparison = document.querySelector("#area-comparison");
+const vesselALegend = document.querySelector("#vessel-a-legend");
+const vesselBLegend = document.querySelector("#vessel-b-legend");
+const sampleAResultLabel = document.querySelector("#sample-a-result-label");
+const sampleATemperature = document.querySelector("#sample-a-temperature");
+const sampleBResultLabel = document.querySelector("#sample-b-result-label");
+const sampleBTemperature = document.querySelector("#sample-b-temperature");
+const temperatureComparison = document.querySelector("#temperature-comparison");
 const resetButton = document.querySelector("#reset");
 
 const oneDecimal = new Intl.NumberFormat("ru-RU", {
@@ -101,12 +114,6 @@ function geometryFor(volumeLiters, baseSideCentimeters) {
   };
 }
 
-function cubeGeometry(volumeLiters) {
-  const volume = volumeLiters / 1000;
-  const sideMeters = Math.cbrt(volume);
-  return geometryFor(volumeLiters, sideMeters * 100);
-}
-
 function optimumBaseSideCentimeters(volumeLiters) {
   return Math.cbrt(2 * volumeLiters / 1000) * 100;
 }
@@ -142,7 +149,7 @@ function updateControlOutputs(state) {
   Object.values(controls).forEach(setRangeProgress);
 }
 
-function drawVessel(state, geometry) {
+function drawVessel(diagram, baseSideCentimeters, geometry, vesselLabel, palette) {
   const width = 360;
   const bottom = 222;
   const aspectRatio = geometry.height / geometry.baseSide;
@@ -152,12 +159,14 @@ function drawVessel(state, geometry) {
   const top = bottom - visualHeight;
   const ellipseHeight = Math.max(11, Math.min(25, visualWidth * 0.11));
 
-  vesselDiagram.replaceChildren(
-    createSvgElement("title", { id: "vessel-diagram-title" }, "Схема выбранного сосуда"),
+  const idPrefix = `vessel-${vesselLabel.toLowerCase()}-diagram`;
+
+  diagram.replaceChildren(
+    createSvgElement("title", { id: `${idPrefix}-title` }, `Схема сосуда ${vesselLabel}`),
     createSvgElement(
       "desc",
-      { id: "vessel-diagram-description" },
-      `Квадратный сосуд шириной ${oneDecimal.format(state.baseSide)} сантиметра и высотой воды ${oneDecimal.format(geometry.height * 100)} сантиметра.`,
+      { id: `${idPrefix}-description` },
+      `Сосуд ${vesselLabel} шириной ${oneDecimal.format(baseSideCentimeters)} сантиметра и высотой воды ${oneDecimal.format(geometry.height * 100)} сантиметра.`,
     ),
   );
 
@@ -170,7 +179,7 @@ function drawVessel(state, geometry) {
       height: visualHeight,
       rx: 8,
       fill: "rgba(12, 148, 165, 0.18)",
-      stroke: "#076a78",
+      stroke: palette.stroke,
       "stroke-width": 3,
     }),
     createSvgElement("rect", {
@@ -179,15 +188,15 @@ function drawVessel(state, geometry) {
       width: visualWidth - 8,
       height: Math.max(0, visualHeight - ellipseHeight / 2 - 4),
       rx: 5,
-      fill: "rgba(12, 148, 165, 0.55)",
+      fill: palette.water,
     }),
     createSvgElement("ellipse", {
       cx: width / 2,
       cy: top + ellipseHeight / 2,
       rx: visualWidth / 2,
       ry: ellipseHeight / 2,
-      fill: "rgba(232, 121, 69, 0.72)",
-      stroke: "#076a78",
+      fill: palette.top,
+      stroke: palette.stroke,
       "stroke-width": 3,
     }),
     createSvgElement("line", {
@@ -220,7 +229,7 @@ function drawVessel(state, geometry) {
       fill: "#5d7680",
       "font-size": 14,
       "text-anchor": "middle",
-    }, `a = ${oneDecimal.format(state.baseSide)} см`),
+    }, `a${vesselLabel} = ${oneDecimal.format(baseSideCentimeters)} см`),
   );
 
   const dimensionX = Math.min(width - 20, left + visualWidth + 24);
@@ -259,7 +268,7 @@ function drawVessel(state, geometry) {
     }, `h = ${oneDecimal.format(geometry.height * 100)} см`),
   );
 
-  vesselDiagram.append(vessel);
+  diagram.append(vessel);
 }
 
 function addCurve(chartElement, valueAt, x, y, duration, attributes) {
@@ -282,7 +291,7 @@ function addCurve(chartElement, valueAt, x, y, duration, attributes) {
   }));
 }
 
-function drawChart(state, selectedGeometry, referenceGeometry) {
+function drawChart(state, geometryA, geometryB) {
   const width = 900;
   const height = 480;
   const margin = { top: 26, right: 28, bottom: 58, left: 72 };
@@ -297,15 +306,15 @@ function drawChart(state, selectedGeometry, referenceGeometry) {
   const x = (time) => margin.left + (time / state.duration) * plotWidth;
   const y = (temperature) => margin.top
     + ((yMaximum - temperature) / (yMaximum - yMinimum)) * plotHeight;
-  const selectedAt = (time) => temperatureAt(time, state, selectedGeometry.area);
-  const referenceAt = (time) => temperatureAt(time, state, referenceGeometry.area);
+  const vesselAAt = (time) => temperatureAt(time, state, geometryA.area);
+  const vesselBAt = (time) => temperatureAt(time, state, geometryB.area);
 
   chart.replaceChildren(
     createSvgElement("title", { id: "comparison-chart-title" }, "Сравнение температуры воды в сосудах разной формы"),
     createSvgElement(
       "desc",
       { id: "comparison-chart-description" },
-      "Сплошная линия показывает выбранный сосуд, фиолетовая пунктирная — кубический сосуд того же объёма.",
+      `Сплошная линия показывает сосуд A шириной ${oneDecimal.format(state.baseSideA)} сантиметра, фиолетовая пунктирная — сосуд B шириной ${oneDecimal.format(state.baseSideB)} сантиметра.`,
     ),
   );
 
@@ -385,11 +394,11 @@ function drawChart(state, selectedGeometry, referenceGeometry) {
     }),
   );
 
-  addCurve(chart, referenceAt, x, y, state.duration, {
+  addCurve(chart, vesselBAt, x, y, state.duration, {
     stroke: "#7457a8",
     "stroke-dasharray": "11 9",
   });
-  addCurve(chart, selectedAt, x, y, state.duration, { stroke: "#0c94a5" });
+  addCurve(chart, vesselAAt, x, y, state.duration, { stroke: "#0c94a5" });
 
   const sampleX = x(state.sampleTime);
   chart.append(createSvgElement("line", {
@@ -403,8 +412,8 @@ function drawChart(state, selectedGeometry, referenceGeometry) {
   }));
 
   for (const [value, stroke] of [
-    [referenceAt(state.sampleTime), "#7457a8"],
-    [selectedAt(state.sampleTime), "#076a78"],
+    [vesselBAt(state.sampleTime), "#7457a8"],
+    [vesselAAt(state.sampleTime), "#076a78"],
   ]) {
     chart.append(createSvgElement("circle", {
       cx: sampleX,
@@ -458,8 +467,8 @@ function drawChart(state, selectedGeometry, referenceGeometry) {
     hoverLine.setAttribute("x2", constrainedX);
     tooltip.setAttribute("transform", `translate(${tooltipX} ${margin.top + 8})`);
     tooltipTime.textContent = `${oneDecimal.format(time)} мин`;
-    tooltipSelected.textContent = `Форма: ${oneDecimal.format(selectedAt(time))} °C`;
-    tooltipCube.textContent = `Куб: ${oneDecimal.format(referenceAt(time))} °C`;
+    tooltipSelected.textContent = `Сосуд A: ${oneDecimal.format(vesselAAt(time))} °C`;
+    tooltipCube.textContent = `Сосуд B: ${oneDecimal.format(vesselBAt(time))} °C`;
   });
 
   hitArea.addEventListener("pointerleave", () => {
@@ -469,29 +478,44 @@ function drawChart(state, selectedGeometry, referenceGeometry) {
   chart.append(hitArea);
 }
 
-function updateResults(state, selectedGeometry, referenceGeometry) {
-  const selectedTemperature = temperatureAt(state.sampleTime, state, selectedGeometry.area);
-  const referenceTemperature = temperatureAt(state.sampleTime, state, referenceGeometry.area);
-  const comparisonPercent = (selectedGeometry.area / referenceGeometry.area - 1) * 100;
+function updateResults(state, geometryA, geometryB) {
+  const temperatureA = temperatureAt(state.sampleTime, state, geometryA.area);
+  const temperatureB = temperatureAt(state.sampleTime, state, geometryB.area);
   const optimumSide = optimumBaseSideCentimeters(state.volume);
-  const distanceFromOptimum = Math.abs(state.baseSide / optimumSide - 1);
+  const areaDifferencePercent = Math.abs(geometryA.area - geometryB.area)
+    / Math.min(geometryA.area, geometryB.area) * 100;
+  const shapeDescription = (side) => {
+    if (Math.abs(side / optimumSide - 1) < 0.02) return "Около минимума площади";
+    return side < optimumSide ? "Уже точки минимума" : "Шире точки минимума";
+  };
 
-  heightResult.textContent = `${oneDecimal.format(selectedGeometry.height * 100)} см`;
-  areaResult.textContent = `${threeDecimals.format(selectedGeometry.area)} м²`;
-  kResult.textContent = `${twoDecimals.format(state.alpha * selectedGeometry.area)} Вт/°C`;
-  tauResult.textContent = `${oneDecimal.format(characteristicTimeMinutes(state, selectedGeometry.area))} мин`;
-  sampleResultLabel.textContent = `Выбранная форма через ${oneDecimal.format(state.sampleTime)} мин`;
-  sampleTemperature.textContent = `${oneDecimal.format(selectedTemperature)} °C`;
-  cubeTemperature.textContent = `${oneDecimal.format(referenceTemperature)} °C`;
-  areaComparison.textContent = `${comparisonPercent >= 0 ? "+" : "−"}${oneDecimal.format(Math.abs(comparisonPercent))}%`;
+  heightAResult.textContent = `${oneDecimal.format(geometryA.height * 100)} см`;
+  areaAResult.textContent = `${threeDecimals.format(geometryA.area)} м²`;
+  kAResult.textContent = `${twoDecimals.format(state.alpha * geometryA.area)} Вт/°C`;
+  tauAResult.textContent = `${oneDecimal.format(characteristicTimeMinutes(state, geometryA.area))} мин`;
+  heightBResult.textContent = `${oneDecimal.format(geometryB.height * 100)} см`;
+  areaBResult.textContent = `${threeDecimals.format(geometryB.area)} м²`;
+  kBResult.textContent = `${twoDecimals.format(state.alpha * geometryB.area)} Вт/°C`;
+  tauBResult.textContent = `${oneDecimal.format(characteristicTimeMinutes(state, geometryB.area))} мин`;
+  vesselAShape.textContent = shapeDescription(state.baseSideA);
+  vesselBShape.textContent = shapeDescription(state.baseSideB);
+  vesselALegend.textContent = `A · ${oneDecimal.format(state.baseSideA)} см`;
+  vesselBLegend.textContent = `B · ${oneDecimal.format(state.baseSideB)} см`;
+  sampleAResultLabel.textContent = `Сосуд A через ${oneDecimal.format(state.sampleTime)} мин`;
+  sampleATemperature.textContent = `${oneDecimal.format(temperatureA)} °C`;
+  sampleBResultLabel.textContent = `Сосуд B через ${oneDecimal.format(state.sampleTime)} мин`;
+  sampleBTemperature.textContent = `${oneDecimal.format(temperatureB)} °C`;
+  temperatureComparison.textContent = `${oneDecimal.format(Math.abs(temperatureA - temperatureB))} °C`;
 
-  if (distanceFromOptimum < 0.02) {
-    geometryInsight.textContent = `Почти минимум площади: для этого объёма оптимальная сторона a ≈ ${oneDecimal.format(optimumSide)} см. Здесь характерное время максимально.`;
-  } else if (state.baseSide < optimumSide) {
-    geometryInsight.textContent = `Сосуд уже точки минимума a ≈ ${oneDecimal.format(optimumSide)} см: боковые стенки дают ${oneDecimal.format(selectedGeometry.sideArea / selectedGeometry.area * 100)}% всей площади.`;
-  } else {
-    geometryInsight.textContent = `Сосуд шире точки минимума a ≈ ${oneDecimal.format(optimumSide)} см: верхняя поверхность уже даёт ${oneDecimal.format(selectedGeometry.topArea / selectedGeometry.area * 100)}% всей площади.`;
+  if (areaDifferencePercent < 0.5) {
+    geometryInsight.textContent = `Площади почти равны, поэтому сосуды приближаются к температуре воздуха практически с одинаковой скоростью. Минимум площади находится при a ≈ ${oneDecimal.format(optimumSide)} см.`;
+    return;
   }
+
+  const fasterLabel = geometryA.area > geometryB.area ? "A" : "B";
+  const largerArea = Math.max(geometryA.area, geometryB.area);
+  const smallerArea = Math.min(geometryA.area, geometryB.area);
+  geometryInsight.textContent = `У сосуда ${fasterLabel} площадь на ${oneDecimal.format((largerArea / smallerArea - 1) * 100)}% больше, поэтому он быстрее приближается к температуре воздуха. Для этого объёма минимум площади находится при a ≈ ${oneDecimal.format(optimumSide)} см.`;
 }
 
 function render() {
@@ -504,13 +528,22 @@ function render() {
   }
 
   const state = readState();
-  const selectedGeometry = geometryFor(state.volume, state.baseSide);
-  const referenceGeometry = cubeGeometry(state.volume);
+  const geometryA = geometryFor(state.volume, state.baseSideA);
+  const geometryB = geometryFor(state.volume, state.baseSideB);
 
   updateControlOutputs(state);
-  drawVessel(state, selectedGeometry);
-  drawChart(state, selectedGeometry, referenceGeometry);
-  updateResults(state, selectedGeometry, referenceGeometry);
+  drawVessel(vesselADiagram, state.baseSideA, geometryA, "A", {
+    stroke: "#076a78",
+    water: "rgba(12, 148, 165, 0.55)",
+    top: "rgba(232, 121, 69, 0.72)",
+  });
+  drawVessel(vesselBDiagram, state.baseSideB, geometryB, "B", {
+    stroke: "#5e438d",
+    water: "rgba(116, 87, 168, 0.45)",
+    top: "rgba(232, 121, 69, 0.72)",
+  });
+  drawChart(state, geometryA, geometryB);
+  updateResults(state, geometryA, geometryB);
 }
 
 Object.values(controls).forEach((control) => {
