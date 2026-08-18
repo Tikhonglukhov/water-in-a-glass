@@ -33,10 +33,12 @@ S(a) = a² + 4V/a
 mc · dT/dt = αS(a) · (T_air - T)
 ```
 
-The page compares a selected vessel with a cube containing the same amount of
-water. It also shows the non-monotonic result: both very narrow and very wide
-vessels have a large exposed area. The minimum occurs at `a = (2V)^(1/3)`, where
-`h = a/2` and the characteristic time is largest.
+The page compares two independently adjustable vessels containing the same
+amount of water. Their geometries, exposed areas, characteristic times, and
+temperature curves are shown side by side. It also shows the non-monotonic
+result: both very narrow and very wide vessels have a large exposed area. The
+minimum occurs at `a = (2V)^(1/3)`, where `h = a/2` and the characteristic time
+is largest.
 
 ## Interactive model
 
@@ -59,7 +61,7 @@ The page also includes:
 - live results for the selected time;
 - responsive layouts for desktop and mobile screens.
 
-Continue with the [Level 2 surface-area lab](https://tikhonglukhov.github.io/water-in-a-glass/levels/2-surface-area/), where you can change the volume, square-base width, and heat-transfer coefficient, inspect the resulting geometry, and compare two temperature curves.
+Continue with the [Level 2 surface-area lab](https://tikhonglukhov.github.io/water-in-a-glass/levels/2-surface-area/), where you can change the shared volume and heat-transfer coefficient, set two square-base widths independently, inspect both geometries, and compare their temperature curves.
 
 No build step or external JavaScript libraries are required.
 
