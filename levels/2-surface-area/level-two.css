@@ -1,0 +1,335 @@
+.level-two-hero h1 {
+  max-width: 950px;
+}
+
+.shape-hero {
+  position: relative;
+  width: 170px;
+  height: 180px;
+  margin: 0 auto;
+}
+
+.shape-hero-vessel {
+  position: absolute;
+  right: 12px;
+  bottom: 10px;
+  left: 12px;
+  height: 108px;
+  border: 3px solid rgba(18, 51, 61, 0.3);
+  border-top: 0;
+  border-radius: 0 0 24px 24px;
+  transform: perspective(300px) rotateY(-5deg);
+}
+
+.shape-hero-vessel::before {
+  position: absolute;
+  top: -9px;
+  right: -3px;
+  left: -3px;
+  height: 17px;
+  background: rgba(142, 219, 224, 0.7);
+  border: 3px solid rgba(18, 51, 61, 0.25);
+  border-radius: 50%;
+  content: "";
+}
+
+.shape-hero-vessel span {
+  position: absolute;
+  right: 3px;
+  bottom: 3px;
+  left: 3px;
+  height: 92%;
+  background: linear-gradient(180deg, rgba(61, 194, 207, 0.64), rgba(12, 148, 165, 0.88));
+  border-radius: 0 0 19px 19px;
+}
+
+.shape-hero-air,
+.shape-hero-area {
+  position: absolute;
+  z-index: 3;
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  color: #fff;
+  border-radius: 50%;
+  box-shadow: 0 8px 20px rgba(18, 51, 61, 0.14);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.25rem;
+  font-style: italic;
+}
+
+.shape-hero-air {
+  top: 5px;
+  right: 0;
+  background: var(--warm);
+}
+
+.shape-hero-area {
+  bottom: 0;
+  left: 0;
+  background: var(--water-dark);
+}
+
+.level-two-formula .formula {
+  white-space: normal;
+}
+
+.level-two-steps .step-equation {
+  font-size: 1.03rem;
+}
+
+.geometry-card,
+.optimum-card,
+.vessel-card {
+  scroll-margin-top: 20px;
+}
+
+.area-breakdown {
+  display: grid;
+  gap: 0;
+  margin-top: 23px;
+}
+
+.area-breakdown > div {
+  display: grid;
+  grid-template-columns: 16px 1fr;
+  gap: 13px;
+  align-items: center;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.area-breakdown > div:last-child {
+  border-bottom: 0;
+}
+
+.area-breakdown p {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: baseline;
+  margin: 0;
+  color: var(--muted);
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.area-breakdown strong {
+  color: var(--ink);
+  font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 0.9rem;
+}
+
+.area-swatch {
+  display: block;
+  width: 12px;
+  height: 34px;
+  border-radius: 99px;
+}
+
+.area-swatch.top {
+  background: var(--warm);
+}
+
+.area-swatch.sides {
+  background: var(--water);
+}
+
+.area-swatch.bottom {
+  background: repeating-linear-gradient(-45deg, #aebfbe 0 3px, transparent 3px 6px);
+  border: 1px solid #aebfbe;
+}
+
+.excluded-area {
+  opacity: 0.68;
+}
+
+.optimum-equation {
+  margin: 25px 0 16px;
+  color: var(--water-dark) !important;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.25rem, 2vw, 1.65rem);
+}
+
+.shape-extremes {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  align-items: flex-end;
+  min-height: 96px;
+  margin-top: 21px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.shape-extremes i {
+  align-self: center;
+  color: var(--muted);
+  font-style: normal;
+}
+
+.shape-example {
+  display: block;
+  background: linear-gradient(180deg, rgba(142, 219, 224, 0.45), rgba(12, 148, 165, 0.74));
+  border: 2px solid var(--water-dark);
+  border-top-color: var(--warm);
+  border-radius: 3px 3px 9px 9px;
+}
+
+.shape-example.narrow {
+  width: 27px;
+  height: 78px;
+}
+
+.shape-example.optimum {
+  width: 60px;
+  height: 34px;
+}
+
+.shape-example.wide {
+  width: 91px;
+  height: 18px;
+}
+
+.level-two-workspace {
+  grid-template-columns: minmax(290px, 0.66fr) minmax(600px, 1.6fr);
+}
+
+.highlighted-control {
+  margin: 0 -12px;
+  padding: 13px 12px;
+  background: var(--water-soft);
+  border-radius: 14px;
+}
+
+.level-two-output {
+  display: grid;
+  min-width: 0;
+  gap: 24px;
+}
+
+.vessel-card {
+  padding: 28px;
+  background: var(--card);
+  border: 1px solid rgba(216, 232, 230, 0.9);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.vessel-layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.9fr) minmax(250px, 1.1fr);
+  gap: 28px;
+  align-items: center;
+  margin-top: 15px;
+}
+
+#vessel-diagram {
+  display: block;
+  width: 100%;
+  max-height: 270px;
+}
+
+.geometry-values {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+}
+
+.geometry-values div {
+  min-width: 0;
+  padding: 15px;
+  background: #f7faf9;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+
+.geometry-values dt {
+  margin-bottom: 5px;
+  color: var(--muted);
+  font-size: 0.76rem;
+}
+
+.geometry-values dd {
+  margin: 0;
+  overflow: hidden;
+  color: var(--ink);
+  font-size: 1.18rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 780;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.geometry-insight {
+  margin: 18px 0 0;
+  padding: 14px 16px;
+  color: var(--muted);
+  background: var(--water-soft);
+  border-radius: 14px;
+  font-size: 0.88rem;
+}
+
+.comparison-card {
+  min-width: 0;
+}
+
+.legend-line.selected-curve {
+  border-color: var(--water);
+}
+
+.legend-line.cube-curve {
+  border-color: #7457a8;
+  border-top-style: dashed;
+}
+
+.comparison-results {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+@media (max-width: 1040px) {
+  .level-two-workspace {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .vessel-layout {
+    grid-template-columns: 1fr;
+  }
+
+  #vessel-diagram {
+    max-width: 420px;
+    margin: 0 auto;
+  }
+
+  .area-breakdown p {
+    display: grid;
+    gap: 3px;
+  }
+}
+
+@media (max-width: 620px) {
+  .shape-hero {
+    display: none;
+  }
+
+  .vessel-card {
+    padding: 22px 18px;
+    border-radius: 18px;
+  }
+
+  .geometry-values,
+  .comparison-results {
+    grid-template-columns: 1fr;
+  }
+
+  .legend {
+    flex-wrap: wrap;
+  }
+
+  .level-two-formula .formula {
+    font-size: 1.05rem;
+  }
+}

@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Уровень 2: как площадь и форма сосуда влияют на нагревание воды">
+    <title>Уровень 2 — площадь поверхности</title>
+    <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="../../styles.css">
+    <link rel="stylesheet" href="level-two.css">
+    <script src="level-two.js" defer></script>
+  </head>
+  <body>
+    <main class="page-shell">
+      <header class="hero level-two-hero">
+        <nav class="level-switcher" aria-label="Уровни модели">
+          <a href="../../"><span>01</span> Идеальная модель</a>
+          <a href="./" aria-current="page"><span>02</span> Площадь поверхности</a>
+          <span class="level-coming"><span>03</span> Скоро</span>
+        </nav>
+        <div class="eyebrow">Уровень 2 · геометрия теплообмена</div>
+        <div class="hero-grid">
+          <div>
+            <h1>Форма имеет значение</h1>
+            <p class="lede">
+              Раскроем коэффициент <var>k</var> через площадь, сохраним объём воды
+              неизменным и увидим, почему и узкий, и широкий сосуд могут нагреваться быстрее.
+            </p>
+            <nav class="page-nav" aria-label="Разделы уровня 2">
+              <a href="#derivation">Вывод модели</a>
+              <a href="#geometry">Геометрия</a>
+              <a href="#simulator">Сравнение</a>
+              <a href="#assumptions">Допущения</a>
+            </nav>
+          </div>
+          <div class="shape-hero" aria-hidden="true">
+            <div class="shape-hero-air">α</div>
+            <div class="shape-hero-vessel"><span></span></div>
+            <div class="shape-hero-area">S</div>
+          </div>
+        </div>
+      </header>
+
+      <section class="formula-card level-two-formula" aria-labelledby="formula-title">
+        <div>
+          <p class="section-kicker" id="formula-title">Новое в модели</p>
+          <p class="formula" aria-label="k равно альфа S; S равно a в квадрате плюс четыре V делённое на a">
+            <var>k</var> = <var>αS</var>, &nbsp;
+            <var>S</var>(<var>a</var>) = <var>a</var><sup>2</sup> +
+            <span class="fraction"><span>4<var>V</var></span><span><var>a</var></span></span>
+          </p>
+        </div>
+        <p class="formula-note">
+          <var>α</var> показывает теплоотдачу одного квадратного метра, а <var>S</var> —
+          сколько таких квадратных метров участвует в теплообмене.
+        </p>
+      </section>
+
+      <section class="lesson-card" id="derivation" aria-labelledby="derivation-title">
+        <div class="lesson-intro">
+          <p class="section-kicker">От уровня 1 к уровню 2</p>
+          <h2 id="derivation-title">Вывод модели по шагам</h2>
+          <p>
+            Решение остаётся экспоненциальным. Мы лишь перестаём прятать геометрию
+            внутри общего коэффициента теплообмена.
+          </p>
+        </div>
+
+        <ol class="derivation-grid level-two-steps">
+          <li>
+            <span class="step-number">01</span>
+            <h3>Раскрываем коэффициент</h3>
+            <p>Тепловая мощность пропорциональна площади и разности температур.</p>
+            <p class="step-equation">
+              <span class="fraction"><span>d<var>Q</var></span><span>d<var>t</var></span></span>
+              = <var>αS</var>(<var>T</var><sub>возд</sub> − <var>T</var>)
+            </p>
+          </li>
+          <li>
+            <span class="step-number">02</span>
+            <h3>Считаем площадь</h3>
+            <p>Берём верхнюю грань и четыре боковые; дно исключаем.</p>
+            <p class="step-equation"><var>S</var> = <var>a</var><sup>2</sup> + 4<var>ah</var></p>
+          </li>
+          <li>
+            <span class="step-number">03</span>
+            <h3>Сохраняем объём</h3>
+            <p>При изменении ширины высота автоматически меняется.</p>
+            <p class="step-equation">
+              <var>V</var> = <var>a</var><sup>2</sup><var>h</var>, &nbsp;
+              <var>h</var> = <span class="fraction"><span><var>V</var></span><span><var>a</var><sup>2</sup></span></span>
+            </p>
+          </li>
+          <li>
+            <span class="step-number">04</span>
+            <h3>Подставляем геометрию</h3>
+            <p>Форма сосуда входит в уравнение через одну функцию площади.</p>
+            <p class="step-equation">
+              <var>S</var>(<var>a</var>) = <var>a</var><sup>2</sup> +
+              <span class="fraction"><span>4<var>V</var></span><span><var>a</var></span></span>
+            </p>
+          </li>
+          <li>
+            <span class="step-number">05</span>
+            <h3>Тепловой баланс</h3>
+            <p>Получаемое тепло повышает температуру той же массы воды.</p>
+            <p class="step-equation">
+              <var>mc</var><span class="fraction"><span>d<var>T</var></span><span>d<var>t</var></span></span>
+              = <var>αS</var>(<var>T</var><sub>возд</sub> − <var>T</var>)
+            </p>
+          </li>
+          <li>
+            <span class="step-number">06</span>
+            <h3>Получаем решение</h3>
+            <p>Интегрирование такое же, как на первом уровне, но <var>k=αS</var>.</p>
+            <p class="step-equation">
+              <var>T</var>(<var>t</var>) = <var>T</var><sub>возд</sub> −
+              (<var>T</var><sub>возд</sub> − <var>T</var><sub>0</sub>)e<sup>−<var>αSt</var>/<var>mc</var></sup>
+            </p>
+          </li>
+        </ol>
+      </section>
+
+      <section class="concepts-grid" id="geometry" aria-label="Геометрический смысл модели">
+        <article class="parameter-card geometry-card">
+          <p class="section-kicker">Один объём — разные формы</p>
+          <h2>Из чего складывается площадь</h2>
+          <div class="area-breakdown">
+            <div>
+              <span class="area-swatch top"></span>
+              <p><strong>Верхняя поверхность</strong><var>S</var><sub>верх</sub> = <var>a</var><sup>2</sup></p>
+            </div>
+            <div>
+              <span class="area-swatch sides"></span>
+              <p><strong>Четыре боковые стенки</strong><var>S</var><sub>бок</sub> = 4<var>ah</var> = 4<var>V</var>/<var>a</var></p>
+            </div>
+            <div class="excluded-area">
+              <span class="area-swatch bottom"></span>
+              <p><strong>Дно</strong>Не учитываем: теплообмена со столом пока нет.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="meaning-card optimum-card">
+          <p class="section-kicker">Неочевидный результат</p>
+          <h2>Где нагревание медленнее всего?</h2>
+          <p class="optimum-equation">
+            <var>a</var><sub>min</sub> = (2<var>V</var>)<sup>1/3</sup>, &nbsp;
+            <var>h</var><sub>min</sub> = <var>a</var><sub>min</sub>/2
+          </p>
+          <p>
+            У узкого сосуда огромны боковые стенки, у широкого — верхняя поверхность.
+            Между ними площадь имеет минимум. В этой точке <var>τ=mc/(αS)</var> максимально,
+            поэтому вода меняет температуру медленнее всего.
+          </p>
+          <div class="shape-extremes" aria-hidden="true">
+            <span class="shape-example narrow"></span>
+            <i>→</i>
+            <span class="shape-example optimum"></span>
+            <i>→</i>
+            <span class="shape-example wide"></span>
+          </div>
+        </article>
+      </section>
+
+      <section class="workspace level-two-workspace" id="simulator" aria-label="Сравнение форм сосудов">
+        <aside class="controls-card">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">Параметры</p>
+              <h2>Измените форму</h2>
+            </div>
+            <button class="reset-button" id="reset" type="button">Сбросить</button>
+          </div>
+
+          <div class="control-list">
+            <div class="control">
+              <div class="control-header">
+                <label for="initial-temperature">Начальная температура</label>
+                <span class="numeric-control"><input id="initial-temperature-number" type="number" min="-10" max="80" step="0.1" value="20" aria-label="Точная начальная температура"><span>°C</span></span>
+              </div>
+              <input id="initial-temperature" type="range" min="-10" max="80" step="0.1" value="20">
+            </div>
+            <div class="control">
+              <div class="control-header">
+                <label for="air-temperature">Температура воздуха</label>
+                <span class="numeric-control"><input id="air-temperature-number" type="number" min="-10" max="90" step="0.1" value="40" aria-label="Точная температура воздуха"><span>°C</span></span>
+              </div>
+              <input id="air-temperature" type="range" min="-10" max="90" step="0.1" value="40">
+            </div>
+            <div class="control">
+              <div class="control-header">
+                <label for="volume">Объём воды, <var>V</var></label>
+                <span class="numeric-control"><input id="volume-number" type="number" min="0.2" max="3" step="0.01" value="1" aria-label="Точный объём воды"><span>л</span></span>
+              </div>
+              <input id="volume" type="range" min="0.2" max="3" step="0.01" value="1">
+            </div>
+            <div class="control highlighted-control">
+              <div class="control-header">
+                <label for="base-side">Сторона основания, <var>a</var></label>
+                <span class="numeric-control"><input id="base-side-number" type="number" min="4" max="30" step="0.1" value="20" aria-label="Точная сторона квадратного основания"><span>см</span></span>
+              </div>
+              <input id="base-side" type="range" min="4" max="30" step="0.1" value="20">
+            </div>
+            <div class="control">
+              <div class="control-header">
+                <label for="alpha">Коэффициент теплоотдачи, <var>α</var></label>
+                <span class="numeric-control wide"><input id="alpha-number" type="number" min="1" max="30" step="0.1" value="10" aria-label="Точный коэффициент теплоотдачи"><span>Вт/(м²·°C)</span></span>
+              </div>
+              <input id="alpha" type="range" min="1" max="30" step="0.1" value="10">
+            </div>
+            <div class="control">
+              <div class="control-header">
+                <label for="sample-time">Рассчитать через</label>
+                <span class="numeric-control"><input id="sample-time-number" type="number" min="0" max="180" step="0.1" value="30" aria-label="Точное время расчёта"><span>мин</span></span>
+              </div>
+              <input id="sample-time" type="range" min="0" max="180" step="0.1" value="30">
+            </div>
+            <div class="control">
+              <div class="control-header">
+                <label for="duration">Длительность графика</label>
+                <span class="numeric-control"><input id="duration-number" type="number" min="30" max="360" step="1" value="180" aria-label="Точная длительность графика"><span>мин</span></span>
+              </div>
+              <input id="duration" type="range" min="30" max="360" step="1" value="180">
+            </div>
+          </div>
+        </aside>
+
+        <div class="level-two-output">
+          <section class="vessel-card" aria-labelledby="vessel-title">
+            <div>
+              <p class="section-kicker">Текущая геометрия</p>
+              <h2 id="vessel-title">Сосуд при неизменном объёме</h2>
+            </div>
+            <div class="vessel-layout">
+              <svg id="vessel-diagram" viewBox="0 0 360 270" role="img" aria-labelledby="vessel-diagram-title vessel-diagram-description">
+                <title id="vessel-diagram-title">Схема сосуда</title>
+                <desc id="vessel-diagram-description">Прямоугольный сосуд с квадратным основанием, заполненный водой.</desc>
+              </svg>
+              <dl class="geometry-values">
+                <div><dt>Высота <var>h</var></dt><dd id="height-result">2,5 см</dd></div>
+                <div><dt>Площадь <var>S</var></dt><dd id="area-result">0,060 м²</dd></div>
+                <div><dt><var>k=αS</var></dt><dd id="k-result">0,60 Вт/°C</dd></div>
+                <div><dt>Характерное время <var>τ</var></dt><dd id="tau-result">116,1 мин</dd></div>
+              </dl>
+            </div>
+            <p class="geometry-insight" id="geometry-insight"></p>
+          </section>
+
+          <section class="visualization-card comparison-card" aria-labelledby="graph-heading">
+            <div class="section-heading graph-heading">
+              <div>
+                <p class="section-kicker">Сравнение</p>
+                <h2 id="graph-heading">Выбранная форма и куб</h2>
+              </div>
+              <div class="legend" aria-label="Легенда графика">
+                <span><i class="legend-line selected-curve"></i>Выбранная</span>
+                <span><i class="legend-line cube-curve"></i>Куб</span>
+                <span><i class="legend-line ambient"></i>Воздух</span>
+              </div>
+            </div>
+            <p class="chart-explanation">
+              Объём, масса, <var>α</var> и начальные температуры одинаковы. Отличается только форма.
+            </p>
+            <div class="chart-wrap">
+              <svg id="comparison-chart" viewBox="0 0 900 480" role="img" aria-labelledby="comparison-chart-title comparison-chart-description">
+                <title id="comparison-chart-title">Сравнение температуры воды в сосудах разной формы</title>
+                <desc id="comparison-chart-description">Две кривые нагревания воды одинакового объёма в выбранном и кубическом сосудах.</desc>
+              </svg>
+            </div>
+            <div class="results comparison-results" aria-live="polite">
+              <article class="result-card accent">
+                <span class="result-label" id="sample-result-label">Выбранная форма через 30 мин</span>
+                <strong id="sample-temperature">24,6 °C</strong>
+              </article>
+              <article class="result-card">
+                <span class="result-label">Кубический сосуд</span>
+                <strong id="cube-temperature">24,0 °C</strong>
+              </article>
+              <article class="result-card">
+                <span class="result-label">Разница площадей</span>
+                <strong id="area-comparison">+20,0%</strong>
+              </article>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section class="assumptions" id="assumptions" aria-labelledby="assumptions-title">
+        <div>
+          <p class="section-kicker">Границы уровня 2</p>
+          <h2 id="assumptions-title">Что изменилось, а что нет</h2>
+        </div>
+        <ul>
+          <li>Площадь верхней и боковых поверхностей теперь считается явно.</li>
+          <li>Объём задаёт массу воды: <var>m=ρV</var>, где <var>ρ=1000</var> кг/м³.</li>
+          <li>Температура воздуха и коэффициент <var>α</var> постоянны.</li>
+          <li>Вода во всех точках имеет одну температуру.</li>
+          <li>Стекло не накапливает тепло и не создаёт сопротивления.</li>
+          <li>Нет испарения и теплообмена через дно со столом.</li>
+        </ul>
+      </section>
+
+      <footer>
+        <span>Water in a Glass · Level 2</span>
+        <a href="https://github.com/Tikhonglukhov/water-in-a-glass">Исходный код на GitHub</a>
+      </footer>
+    </main>
+  </body>
+</html>
